@@ -1,8 +1,5 @@
 #include "typeDef.h"
-
-#define VIDEO_MEM (char *)0xb8000
-#define VGA_WIDTH 80
-#define VGA_HEIGHT 50
+#include "vga.h"
 
 uint16_t CursorPos = 0;
 
