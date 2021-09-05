@@ -62,3 +62,63 @@ void putCh(char Letter)
     }
     return;
 }
+
+void enable_cursor(uint8_t cursor_start, uint8_t cursor_end)
+{
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
+ 
+	outb(0x3D4, 0x0B);
+	outb(0x3D5, (inb(0x3D5) & 0xE0) | cursor_end);
+}
+
+void drawPixel(uint8_t x, uint8_t y, uint8_t colour){
+    uint8_t * pos = (y * 320 + x) + (uint8_t *)0xA0000;
+    *pos = colour;
+    return;
+}
+
+void clearScreen(){
+    for(int i = 0; i<VGA_HEIGHT;i++){
+        for(int j = 0;j<VGA_WIDTH;j++){
+            *(VIDEO_MEM + (i * VGA_HEIGHT * 2) + j * 2) = (const char)' ';
+            *(VIDEO_MEM + (i * VGA_HEIGHT * 2) + j * 2 - 1) = (const char)0x0f;
+        }
+    }
+    setCursorPos(0, 0);
+    return;
+}
+
+void colourScreen(uint8_t colour){
+    for(int i = 0; i<VGA_HEIGHT;i++){
+        for(int j = 0;j<VGA_WIDTH;j++){
+            *(VIDEO_MEM + (i * VGA_HEIGHT * 2) + j * 2) = (const char)' ';
+            *(VIDEO_MEM + (i * VGA_HEIGHT * 2) + j * 2 - 1) = (const char)colour;
+        }
+    }
+    setCursorPos(0, 0);
+    return;
+}
+
+void graphicsClearScreen(uint8_t colour){
+    uint8_t * graphicsVideoMem = (uint8_t *)0xA0000;
+    for(int i = 0;i < 200;i++){
+        for(int j = 0;j < 320;j++){
+            *graphicsVideoMem = colour;
+            graphicsVideoMem++;
+        }
+    }
+}
+
+void drawPalette(uint8_t x, uint8_t y){
+    uint8_t * graphicsVideoMem = (uint8_t *)0xA0000 + (y * 320 + x);
+    uint8_t colourIndex = 0x0;
+    for(uint8_t i = 0;i < 0xf;i++){
+        for(uint8_t j = 0;j < 0xf;j++) {
+            *graphicsVideoMem = colourIndex;
+            colourIndex++;
+            graphicsVideoMem++;
+        }
+        graphicsVideoMem += (320 - 0xf);
+    }
+}

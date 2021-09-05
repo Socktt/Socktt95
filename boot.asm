@@ -1,11 +1,37 @@
 [org 0x7c00]
 
+BPB:
+    jmp BPB_End
+BPB_OEM:                    db "Socktt95 "
+BPB_BytesPerSector:         dw 512
+BPB_SectorsPerCluster:      db 1
+BPB_ReservedSectors:        dw 1
+BPB_NumberOfFAT:            db 2
+BPB_DirectoryEntries:       dw 1
+BPB_Sectors:                dw 1000
+BPB_MediaDescriptorType:    db 0xF8
+BPB_SectorsPerFAT:          dw 1
+BPB_SectorsPerTrack:        dw 12
+BPB_HeadsOnMedia:           dw 1
+BPB_HiddenSectors:          dd 1
+BPB_LargeSectorCount:       dd 0
+
+EBPB:
+EBPB_DriveNumber:           db 0x00
+EBPB_NTFlags:               db 0
+EBPB_Signature:             db 0x28
+EBPB_VolumeID:              dd 0x69420
+EBPB_VolumeLabelString:     db "Socktt95   "
+EBPB_SystemIDString:        db "Socktt95"
+
+BPB_End:
+
 KERNEL_LOCATION equ 0x1000
 
 mov [BOOT_DISK], dl
 
 mov ah, 0
-mov al, 3
+mov al, 0x13
 int 0x10
 
 mov ah, 0

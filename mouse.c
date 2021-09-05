@@ -3,6 +3,7 @@
 #include "typeDef.h"
 #include "port_io.h"
 #include "mouse.h"
+#include "gui.h"
 
 uint8_t mouseCycle;
 uint8_t mousePacket[4];
@@ -75,8 +76,18 @@ void ProcessMousePacket()
 
     if (MousePosition.y < 0) MousePosition.y = 0;
     if (MousePosition.y > VGA_HEIGHT-1) MousePosition.y = VGA_HEIGHT-2;
+    //setCursorPos(MousePosition.x, MousePosition.y);
 
-    setCursorPos(MousePosition.x, MousePosition.y);
+    //struct Box testBox;
+    //testBox.colour = 0x01;
+
+    //SetBoxSizeAndPos(testBox, 10, 10, 50, 20);
+
+    graphicsClearScreen(0x3f);
+    //DrawBox(testBox);
+    drawPalette(MousePosition.x, MousePosition.y);
+    while ((inb(0x3DA) & 0x08));
+    while (!(inb(0x3DA) & 0x08)); // vsync
 }
 
 void parseMouseData(uint8_t data)
